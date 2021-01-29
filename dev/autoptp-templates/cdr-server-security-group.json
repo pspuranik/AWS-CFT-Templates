@@ -1,0 +1,17 @@
+{
+    "VitalizeId": "615348",
+    "PipelineName": "v615348-sabre-ec2-dev-sg-06",
+    "Env": "dev",
+    "CRID": "",
+    "Mail": "karthikeyan.siranjeevi@bms.com",
+    "autoptpurl": "https://autoptp-proddev.web-dev.bms.com/create",
+    "Jobs": [
+        {
+            "StackName": "v615348-sabre-ec2-dev-sg-01",
+            "TemplateUrl": "https://code.bms.com/svn/repos/svn_615348_sabre/trunk/aws/templates/v615348-ec2-dev-cdr-sg.json",
+			"AccountId": "820784505615",
+            "JobExecutionId": 100
+        }
+    ]
+}
+    

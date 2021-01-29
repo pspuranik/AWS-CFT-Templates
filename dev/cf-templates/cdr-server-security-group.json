@@ -1,0 +1,331 @@
+{
+    "Description": "Cloud Formation to create a security group for CDR box for Sabre",
+    "Mappings": {
+      "Environments": {
+        "-AutoTag": {
+          "Tags": [
+            {
+              "Key": "VitalizeId",
+              "Value": "615348"
+            },
+            {
+              "Key": "Project",
+              "Value": "v615348_pbms_sabre"
+            },
+            {
+              "Key": "ProjectTeam",
+              "Value": "v615348_pbms_sabre"
+            },
+            {
+              "Key": "Contact",
+              "Value": "prasad.puranik@bms.com"
+            }
+          ]
+        },
+        "BMS-Account": {
+          "dev": "BMSIS",
+          "prod": "BMSISPROD",
+          "rc": "BMSISPROD",
+          "uat": "BMSIS"
+        },
+        "Base-Lookup": {
+          "BMSIS": "uat",
+          "BMSISPROD": "prod"
+        },
+        "dev": {
+          "RootVolumeSize": "100",
+          "EBSVolumeSize": "2048",
+          "FQDNS": "sabre-cdr-dev-16.web-dev.bms.com",
+          "AMIID": "ami-0556f502dfde72866",
+          "IAMRoleName": "BMS-SSM-EC2-ROLE",
+          "InstanceType": "m5.2xlarge"
+        },
+        "prod": {
+          "RootVolumeSize": "100",
+          "EBSVolumeSize": "2048",
+          "FQDNS": "sabre-cdr-prod-01.web-dev.bms.com",
+          "AMIID": "ami-0556f502dfde72866",
+          "IAMRoleName": "BMS-SSM-EC2-ROLE",
+          "InstanceType": "m5d.2xlarge"
+        },
+        "uat": {
+          "RootVolumeSize": "100",
+          "EBSVolumeSize": "2048",
+          "FQDNS": "sabre-cdr-uat-01.web-dev.bms.com",
+          "AMIID": "ami-0556f502dfde72866",
+          "IAMRoleName": "BMS-SSM-EC2-ROLE",
+          "InstanceType": "m5.2xlarge"
+        }
+      }
+    },
+    "Parameters": {
+      "EnvironUsed": {
+        "AllowedValues": [
+          "dev",
+          "uat",
+          "lab",
+          "prod",
+          "rc"
+        ],
+        "ConstraintDescription": "Must be one of the four Allowed Values i.e. dev, uat, rc, prod",
+        "Default": "dev",
+        "Description": "The Environment Used",
+        "Type": "String"
+      },
+      "JenkinsURL": {
+        "Description": "URL of the Jenkins job that invoked the stack creation",
+        "Type": "String"
+      },
+      "OperatorEmail": {
+        "AllowedPattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)",
+        "ConstraintDescription": "must be a valid email address.",
+        "Default": "prasad.puranik@bms.com",
+        "Description": "BMS email address to notify if there are any operational issues related to application",
+        "Type": "String"
+      },
+      "Project": {
+        "Default": "v615348_pbms_sabre",
+        "Type": "String"
+      },
+      "SignedUserToken": {
+        "Default": "test",
+        "Description": "Encrypted user token string.",
+        "Type": "String"
+      },
+      "UTCTimeStamp": {
+        "Default": "2018-07-09T01:45:45",
+        "Description": "UTC TimeStamp sample example 2018-04-03T01:45:45",
+        "Type": "String"
+      },
+      "VitalizeId": {
+        "Default": "615348",
+        "Description": "Vitalize Id of Log Aggregation project",
+        "Type": "String"
+      }
+    },
+    "Resources": {
+      "SabreCDRSecurityGroup": {
+        "Properties": {
+          "GroupDescription": "Security Group for CDR server",
+          "GroupName": "Sabre-CDR-Security-Group",
+          "SecurityGroupEgress": [
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "0",
+              "IpProtocol": "-1",
+              "ToPort": "65535"
+            }
+          ],
+          "SecurityGroupIngress": [
+            {
+              "CidrIp": "10.0.0.0/8",
+              "FromPort": "22",
+              "IpProtocol": "tcp",
+              "ToPort": "22"
+            },
+            {
+              "CidrIp": "172.21.83.0/25",
+              "FromPort": "2049",
+              "IpProtocol": "tcp",
+              "ToPort": "2049"
+            },
+            {
+              "CidrIp": "172.21.83.0/25",
+              "FromPort": "2049",
+              "IpProtocol": "udp",
+              "ToPort": "2049"
+            },
+            {
+              "CidrIp": "172.21.83.128/25",
+              "FromPort": "2049",
+              "IpProtocol": "tcp",
+              "ToPort": "2049"
+            },
+            {
+              "CidrIp": "172.21.83.128/25",
+              "FromPort": "2049",
+              "IpProtocol": "udp",
+              "ToPort": "2049"
+            },
+            {
+              "CidrIp": "172.21.83.0/25",
+              "FromPort": "80",
+              "IpProtocol": "tcp",
+              "ToPort": "80"
+            },
+            {
+              "CidrIp": "172.21.83.128/25",
+              "FromPort": "80",
+              "IpProtocol": "tcp",
+              "ToPort": "80"
+            },
+            {
+              "CidrIp": "158.117.0.0/16",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "192.168.0.0/16",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "140.176.0.0/16",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "10.0.0.0/8",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "165.89.0.0/16",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "198.155.0.0/16",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "172.16.0.0/12",
+              "FromPort": "443",
+              "IpProtocol": "tcp",
+              "ToPort": "443"
+            },
+            {
+              "CidrIp": "158.117.0.0/16",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "192.168.0.0/16",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "140.176.0.0/16",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "10.0.0.0/8",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "165.89.0.0/16",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "198.155.0.0/16",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            },
+            {
+              "CidrIp": "172.16.0.0/12",
+              "FromPort": "445",
+              "IpProtocol": "tcp",
+              "ToPort": "445"
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": {
+                "Ref": "Project"
+              }
+            },
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "VitalizeId"
+                    },
+                    "SG-Sabre-CDR",
+                    {
+                      "Ref": "EnvironUsed"
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "VpcId": {
+            "Fn::GetAtt": [
+              "masterVPCLookup",
+              "VPCID"
+            ]
+          }
+        },
+        "Type": "AWS::EC2::SecurityGroup"
+      },
+      "masterVPCLookup": {
+        "Properties": {
+          "CFStackName": {
+            "Fn::Join": [
+              "-",
+              [
+                "Master-VPCLookup",
+                {
+                  "Fn::FindInMap": [
+                    "Environments",
+                    "Base-Lookup",
+                    {
+                      "Fn::FindInMap": [
+                        "Environments",
+                        "BMS-Account",
+                        {
+                          "Ref": "EnvironUsed"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "ServiceToken": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:sns:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":650586835449:bmscr"
+              ]
+            ]
+          }
+        },
+        "Type": "Custom::crLookup"
+      }
+    },
+    "Outputs": {
+      "SecurityGroupID": {
+        "Description": "Security Group ID",
+        "Value": {
+          "Ref": "SabreCDRSecurityGroup"
+        }
+      }
+    },
+    "AWSTemplateFormatVersion": "2010-09-09"
+  }
